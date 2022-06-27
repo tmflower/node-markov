@@ -10,44 +10,24 @@ class MarkovMachine {
     this.makeChains();
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////////
-  // This is the provided solution; I couldn't get mine to work right. Mine keeps repeating the same "nextWord" whenever a word appears more than once in the text. Waiting on help from TA's and using the working solution so I can continue on.
-  ////////////////////////////////////////////////////////////////////////////////////////////////
+  makeChains() {
+    const words = new Map();
 
-   makeChains() {
-    let chains = new Map();
-
-    for (let i = 0; i < this.words.length; i += 1) {
-      let word = this.words[i];
-      let nextWord = this.words[i + 1] || null;
-
-      if (chains.has(word)) chains.get(word).push(nextWord);
-      else chains.set(word, [nextWord]);
+    for (let i = 0; i < this.words.length; i++) {
+      let word = this.words[i]; 
+      let nextWord = this.words[i + 1]
+      if (i === this.words.length-1) {
+        words.set(word, [null])
+      }
+      else if (words.has(word)) {
+        words.get(word).push(nextWord);
+      }
+      else {
+        words.set(word, [nextWord]);
+      }          
     }
-    this.chains = chains;
+    this.words = words;
   }
-
-////////////////////////////////////////////////////////////////////////////
-// This is my original version with the repeating issue:
-///////////////////////////////////////////////////////////////////////////
-
-  //  makeChains() {
-  //   const words = new Map();
-
-  //   for (let word of this.words) { 
-  //     let nextWord = this.words[this.words.indexOf(word)+1]
-  //     if (this.words.indexOf(word) === this.words.length-1) {
-  //       words.set(word, [null])
-  //     }
-  //     else if (words.has(word)) {
-  //       words.get(word).push(nextWord);
-  //     }
-  //     else {
-  //       words.set(word, [nextWord]);
-  //     }          
-  //   }console.log(words);
-  //   this.words = words;
-  // }
 
   /** return random text from chains */
 
@@ -55,12 +35,12 @@ class MarkovMachine {
     let newText = [];
 
     for (let i = 0; i < numWords; i++) {
-      let keys = [...this.chains.keys()];
+      let keys = [...this.words.keys()];
       let numKey = Math.floor(Math.random() * keys.length);
       let word = keys[numKey];
       newText.push(word);
   
-      let vals = this.chains.get(word)
+      let vals = this.words.get(word)
       let numVal = Math.floor(Math.random() * vals.length);
       let nextWord = vals[numVal];
       newText.push(nextWord);
